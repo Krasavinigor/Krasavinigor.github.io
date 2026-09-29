@@ -1,5 +1,6 @@
 // Static site generator: no dependencies. Usage: node build.mjs  ->  dist/
 import { readFile, writeFile, mkdir, cp, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 
 const SITE = 'https://krasavinigor.github.io'; // change if you use a custom domain
 const LINKS = {
@@ -7,7 +8,10 @@ const LINKS = {
   linkedin: 'https://www.linkedin.com/in/igor-krasavin-b0716020a',
   telegram: 'https://t.me/igorkrasavin',
   email: 'i.krasavin1206@gmail.com',
+  habr: 'https://habr.com/ru/users/IgorKrasavin/',
 };
+const ARTICLE = 'https://habr.com/ru/companies/vk/articles/1039482/';
+const HAS_CV = existsSync(new URL('./src/cv.pdf', import.meta.url)); // drop the PDF into src/cv.pdf to show the button
 const BEAM_PR = 'https://github.com/apache/beam/pull/17104';
 const BEAM_BLOG = 'https://beam.apache.org/blog/beam-2.40.0/';
 
@@ -17,7 +21,7 @@ const T = {
     title: 'Igor Krasavin — Senior Frontend Engineer (React, TypeScript, BI & Data Visualization)',
     desc: 'Senior Frontend Engineer with 7+ years in React and TypeScript. Builds data-heavy products: BI platform at VK. Contributor to Apache Beam and Microsoft CodePush tooling.',
     nav: { oss: 'Open source', work: 'Experience', writing: 'Writing', contact: 'Contact' },
-    eyebrow: 'Senior Frontend Engineer · Yaroslavl, Russia',
+    eyebrow: 'Senior Frontend Engineer · Yaroslavl, Russia (UTC+3) · Open to remote &amp; relocation',
     h1: 'I build front-ends for data-heavy products.',
     lead: '7+ years of React and TypeScript. Today I evolve Horizon, an internal BI platform at VK that unifies Apache Superset, Redash and Yandex DataLens. I have also contributed to Apache Beam and Microsoft’s CodePush tooling.',
     cta: { contact: 'Get in touch', gh: 'GitHub', li: 'LinkedIn' },
@@ -34,15 +38,16 @@ const T = {
       beamP1: 'Added the context classes for CDAP plugins in CdapIO (BEAM-14081): <code>BatchSourceContext</code>, <code>BatchSinkContext</code> and <code>StreamingSourceContext</code> wrappers with tests.',
       beamP2: `<a href="${BEAM_PR}">Pull request #17104</a> · listed among contributors of <a href="${BEAM_BLOG}">Apache Beam 2.40.0</a>`,
       msH: 'Microsoft CodePush ecosystem',
-      msP: 'While working as an SDE at Microsoft I contributed to React Native CodePush, the CodePush server client, the Cordova plugin and App Center CLI: an iOS navigation fix, CLI request limits and JSON output, concurrency setting fix, security hardening (zipperdown) and documentation.',
+      msP: 'On a Microsoft client engagement at Akvelon I contributed to React Native CodePush, the CodePush server client, the Cordova plugin and App Center CLI: an iOS navigation fix, CLI request limits and JSON output, concurrency setting fix, security hardening (zipperdown) and documentation.',
       more: (n) => `Show ${n} more`,
       updated: 'Updated',
     },
     work: {
       h: 'Experience',
       jobs: [
-        { org: 'VK', role: 'Frontend Developer', when: 'Mar 2023 — present · Moscow', items: [
-          'Own the evolution of Horizon, a BI platform combining Superset, Redash and Yandex DataLens into one product.',
+        { org: 'VK', role: 'Senior Frontend Developer', when: 'Mar 2023 — present · Moscow', items: [
+          'Own the evolution of Horizon, a BI platform combining Superset, Redash and Yandex DataLens into one product; monthly active users grew from 2,363 to 3,488 (+47%).',
+          'Designed the layer that embeds Superset and Redash into one shell: a postMessage protocol between apps, browser-history sync for back/forward and shareable deep links, theme and language sync, and a reusable embedding library that sped up the Redash integration.',
           'Frontend architecture: S3/CDN static delivery, caching, multi-version deployments across data centers, zero-downtime releases.',
           'Built dashboards, global filters, dashboard metadata management and data-exploration flows used across VK.',
           'Product analytics on top of BI: dashboards used by 498+ people across VK products.',
@@ -50,21 +55,28 @@ const T = {
         { org: 'Bank Tochka', role: 'Frontend Developer', when: 'Apr 2022 — Feb 2023', items: [
           'Fintech platform for selling banking services: WebSockets for real-time statuses, multi-step forms (React Hook Form + Yup), list virtualization with Intersection Observer.',
           'Built an internal design system from scratch; improved the CI/CD pipeline.'] },
-        { org: 'Microsoft', role: 'Software Development Engineer', when: 'Jul 2020 — Nov 2021', items: [
-          'Cloud microservices and developer tooling in Node.js and TypeScript on Azure (Cosmos DB, Table and Blob Storage, Data Explorer, AKS).',
-          'Contributions to App Center CLI, CodePush and React Native CodePush.'] },
         { org: 'Akvelon', role: 'SDE → Technical Lead', when: 'Aug 2019 — May 2022', items: [
-          'Tech lead of a recruiting assistant (React, TypeScript, GCP, serverless); earlier, a real-time room-monitoring app (React, Redux, Socket.IO).',
-          'Contributed CdapIO work to Apache Beam.'] },
+          'Tech lead of a recruiting assistant, a browser extension and web app (React, TypeScript, GCP, serverless): architecture, sprint planning, code reviews.',
+          'Client: Microsoft (Jul 2020 — Nov 2021). Cloud microservices and developer tooling in Node.js and TypeScript on Azure (Cosmos DB, Table and Blob Storage, Data Explorer, AKS); contributions to App Center CLI, CodePush and React Native CodePush.',
+          'Real-time meeting-room monitoring app (React, Redux, Socket.IO); CdapIO contribution to Apache Beam.'] },
       ],
       skillsH: 'Focus',
       skills: ['React', 'TypeScript', 'Frontend architecture', 'Data visualization', 'BI platforms', 'Design systems', 'Performance', 'AI-assisted engineering'],
     },
     writing: {
       h: 'Writing',
-      p: 'Publication: <em>“One UI to rule them all, one UI to find them: 1 entry point, different BI”</em> — how we unified several BI tools behind a single interface.',
+      title: 'One frontend to rule them all: one entry point, different BI',
+      meta: 'VK Tech blog on Habr · May 2026 · 19 min read · 11K+ views · in Russian',
+      rows: [
+        ['Problem', 'VK ran three BI tools — Yandex DataLens, Apache Superset and Redash — each with its own login, access requests and UI. Sharing dashboards across teams was painful.'],
+        ['Decision', 'DataLens became the shell (no-code dashboards, RBAC); Superset and Redash are embedded via iframes. Micro-frontends were rejected because of dependency alignment, Web Components with Shadow DOM because they do not isolate JavaScript.'],
+        ['How', '<code>AppManager</code> and <code>ChannelWrapper</code> over postMessage; a patched History API so back/forward and deep links work across frames; theme and language sync via <code>MutationObserver</code>; access errors and external links handed to the shell; a shared embedding library reused for Redash.'],
+        ['Trade-offs', 'Heavy dashboards cost memory and performance, and local development needs several services running. The article covers these openly.'],
+      ],
+      read: 'Read the article',
+      profile: 'Habr profile',
     },
-    contact: { h: 'Contact', p: 'Open to interesting frontend and data-visualization problems. The fastest way to reach me is Telegram or email.' },
+    contact: { h: 'Contact', p: 'Open to senior frontend roles, especially data-heavy products and data visualization. Remote (UTC+3, good overlap with European hours) or relocation. The fastest way to reach me is Telegram or email.', cv: 'Download CV (PDF)' },
     footer: 'Built with a tiny static generator · deployed on GitHub Pages',
   },
   ru: {
@@ -72,7 +84,7 @@ const T = {
     title: 'Игорь Красавин — Senior Frontend Engineer (React, TypeScript, BI и визуализация данных)',
     desc: 'Senior Frontend Engineer, 7+ лет с React и TypeScript. Делаю интерфейсы для data-heavy продуктов: BI-платформа в VK. Контрибьютор Apache Beam и Microsoft CodePush.',
     nav: { oss: 'Open source', work: 'Опыт', writing: 'Статьи', contact: 'Контакты' },
-    eyebrow: 'Senior Frontend Engineer · Ярославль',
+    eyebrow: 'Senior Frontend Engineer · Ярославль (UTC+3) · Открыт к удалёнке и релокации',
     h1: 'Делаю фронтенд для продуктов с большим количеством данных.',
     lead: '7+ лет с React и TypeScript. Сейчас развиваю Horizon — внутреннюю BI-платформу VK, объединяющую Apache Superset, Redash и Yandex DataLens. Также вносил вклад в Apache Beam и инструменты Microsoft CodePush.',
     cta: { contact: 'Связаться', gh: 'GitHub', li: 'LinkedIn' },
@@ -89,15 +101,16 @@ const T = {
       beamP1: 'Добавил контекстные классы для CDAP-плагинов в CdapIO (BEAM-14081): обёртки <code>BatchSourceContext</code>, <code>BatchSinkContext</code> и <code>StreamingSourceContext</code> с тестами.',
       beamP2: `<a href="${BEAM_PR}">Pull request #17104</a> · в списке контрибьюторов <a href="${BEAM_BLOG}">Apache Beam 2.40.0</a>`,
       msH: 'Экосистема Microsoft CodePush',
-      msP: 'Работая SDE в Microsoft, вносил вклад в React Native CodePush, клиент CodePush-сервера, Cordova-плагин и App Center CLI: исправление навигации на iOS, лимиты запросов и JSON-вывод в CLI, настройка конкурентности, защита от zipperdown и документация.',
+      msP: 'В рамках клиентского проекта Akvelon для Microsoft вносил вклад в React Native CodePush, клиент CodePush-сервера, Cordova-плагин и App Center CLI: исправление навигации на iOS, лимиты запросов и JSON-вывод в CLI, настройка конкурентности, защита от zipperdown и документация.',
       more: (n) => `Показать ещё ${n}`,
       updated: 'Обновлено',
     },
     work: {
       h: 'Опыт',
       jobs: [
-        { org: 'VK', role: 'Frontend Developer', when: 'март 2023 — н. в. · Москва', items: [
-          'Развиваю Horizon — BI-платформу, объединяющую Superset, Redash и Yandex DataLens в один продукт.',
+        { org: 'VK', role: 'Senior Frontend Developer', when: 'март 2023 — н. в. · Москва', items: [
+          'Развиваю Horizon — BI-платформу, объединяющую Superset, Redash и Yandex DataLens в один продукт; MAU вырос с 2 363 до 3 488 (+47%).',
+          'Спроектировал слой встраивания Superset и Redash в единую оболочку: протокол postMessage между приложениями, синхронизация истории браузера (назад/вперёд и ссылки на конкретные дашборды), синхронизация темы и языка, переиспользуемая библиотека встраивания, ускорившая интеграцию Redash.',
           'Архитектура фронтенда: раздача статики через S3/CDN, кэширование, мультиверсионные деплои по дата-центрам, релизы без даунтайма.',
           'Дашборды, глобальные фильтры, управление метаданными дашбордов и сценарии исследования данных, которыми пользуются в VK.',
           'Продуктовая аналитика поверх BI: дашбордами пользуются 498+ человек из продуктов VK.',
@@ -105,21 +118,28 @@ const T = {
         { org: 'Банк Точка', role: 'Frontend Developer', when: 'апр 2022 — фев 2023', items: [
           'Финтех-платформа продаж банковских услуг: WebSocket для статусов в реальном времени, многошаговые формы (React Hook Form + Yup), виртуализация списков через Intersection Observer.',
           'С нуля построил внутреннюю дизайн-систему, улучшил CI/CD.'] },
-        { org: 'Microsoft', role: 'Software Development Engineer', when: 'июль 2020 — нояб 2021', items: [
-          'Облачные микросервисы и developer tooling на Node.js и TypeScript в Azure (Cosmos DB, Table и Blob Storage, Data Explorer, AKS).',
-          'Вклад в App Center CLI, CodePush и React Native CodePush.'] },
         { org: 'Akvelon', role: 'SDE → Technical Lead', when: 'авг 2019 — май 2022', items: [
-          'Техлид ассистента рекрутера (React, TypeScript, GCP, serverless); ранее — приложение мониторинга переговорных в реальном времени (React, Redux, Socket.IO).',
-          'Работа над CdapIO для Apache Beam.'] },
+          'Техлид ассистента рекрутера — браузерного расширения и веб-приложения (React, TypeScript, GCP, serverless): архитектура, планирование спринтов, код-ревью.',
+          'Клиент: Microsoft (июль 2020 — нояб 2021). Облачные микросервисы и developer tooling на Node.js и TypeScript в Azure (Cosmos DB, Table и Blob Storage, Data Explorer, AKS); вклад в App Center CLI, CodePush и React Native CodePush.',
+          'Приложение мониторинга переговорных в реальном времени (React, Redux, Socket.IO); работа над CdapIO для Apache Beam.'] },
       ],
       skillsH: 'Фокус',
       skills: ['React', 'TypeScript', 'Архитектура фронтенда', 'Визуализация данных', 'BI-платформы', 'Дизайн-системы', 'Производительность', 'AI-ассистированная разработка'],
     },
     writing: {
       h: 'Статьи',
-      p: 'Публикация: <em>«One UI to rule them all, one UI to find them: 1 entry point, different BI»</em> — как мы объединили несколько BI-инструментов за одним интерфейсом.',
+      title: 'One UI to rule them all, one UI to find them: 1 entry point, different BI',
+      meta: 'Блог VK на Хабре · май 2026 · 19 минут · 11K+ просмотров',
+      rows: [
+        ['Проблема', 'В VK было три BI-инструмента — Yandex DataLens, Apache Superset и Redash, у каждого свой вход, свои заявки на доступ и свой интерфейс. Делиться дашбордами между командами было неудобно.'],
+        ['Решение', 'Оболочкой стал DataLens (no-code дашборды, RBAC), Superset и Redash встраиваются через iframe. От микрофронтендов отказались из-за согласования зависимостей, от Web Components с Shadow DOM — потому что они не изолируют JavaScript.'],
+        ['Как', '<code>AppManager</code> и <code>ChannelWrapper</code> поверх postMessage; пропатченный History API, чтобы «назад/вперёд» и прямые ссылки работали между фреймами; синхронизация темы и языка через <code>MutationObserver</code>; ошибки доступа и внешние ссылки передаются оболочке; общая библиотека встраивания, переиспользованная для Redash.'],
+        ['Компромиссы', 'Тяжёлые дашборды расходуют память и замедляют страницу, а для локальной разработки нужно поднимать несколько сервисов. В статье это разобрано открыто.'],
+      ],
+      read: 'Читать статью',
+      profile: 'Профиль на Хабре',
     },
-    contact: { h: 'Контакты', p: 'Открыт к интересным задачам во фронтенде и визуализации данных. Быстрее всего — Telegram или почта.' },
+    contact: { h: 'Контакты', p: 'Рассматриваю senior frontend-позиции, особенно в продуктах с большим количеством данных и визуализацией. Удалённо (UTC+3) или с релокацией. Быстрее всего — Telegram или почта.', cv: 'Скачать CV (PDF)' },
     footer: 'Собрано небольшим статическим генератором · GitHub Pages',
   },
 };
@@ -132,6 +152,9 @@ function contributions(t, data) {
     if (!byRepo.has(pr.repo)) byRepo.set(pr.repo, []);
     byRepo.get(pr.repo).push(pr);
   }
+  // Substantive changes first, version bumps and typo fixes last.
+  const rank = (p) => (/^(bump|fix typo|update bin$)/i.test(p.title) ? 2 : /(zipperdown|fix|limit|json|concurren|error|suspend|navigation|cdap)/i.test(p.title) ? 0 : 1);
+  for (const prs of byRepo.values()) prs.sort((a, b) => rank(a) - rank(b) || b.mergedAt.localeCompare(a.mergedAt));
   const li = (p) => `<li><time datetime="${p.mergedAt}">${p.mergedAt}</time><a href="${p.url}">${esc(p.title)}</a></li>`;
   return [...byRepo.entries()]
     .sort((a, b) => (a[0] === 'apache/beam' ? -1 : b[0] === 'apache/beam' ? 1 : b[1].length - a[1].length))
@@ -151,7 +174,7 @@ function page(lang, data) {
     '@context': 'https://schema.org', '@type': 'Person',
     name: 'Igor Krasavin', alternateName: 'Игорь Красавин', jobTitle: 'Senior Frontend Engineer', url: SITE + '/',
     address: { '@type': 'PostalAddress', addressLocality: 'Yaroslavl', addressCountry: 'RU' },
-    sameAs: [LINKS.github, LINKS.linkedin, LINKS.telegram],
+    sameAs: [LINKS.github, LINKS.linkedin, LINKS.telegram, LINKS.habr],
     knowsAbout: ['React', 'TypeScript', 'Frontend architecture', 'Data visualization', 'Business intelligence', 'Apache Beam', 'Design systems'],
     worksFor: { '@type': 'Organization', name: 'VK' },
   };
@@ -222,7 +245,12 @@ ${t.work.jobs.map((j) => `  <div class="job"><h3>${j.org} — ${j.role}</h3><div
 
 <section id="writing">
   <h2>${t.writing.h}</h2>
-  <p>${t.writing.p}</p>
+  <article class="case">
+    <h3><a href="${ARTICLE}">${t.writing.title}</a></h3>
+    <p class="note">${t.writing.meta}</p>
+    <dl>${t.writing.rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+    <div class="links"><a class="btn primary" href="${ARTICLE}">${t.writing.read}</a><a class="btn" href="${LINKS.habr}">${t.writing.profile}</a></div>
+  </article>
 </section>
 
 <section id="contact">
@@ -230,9 +258,11 @@ ${t.work.jobs.map((j) => `  <div class="job"><h3>${j.org} — ${j.role}</h3><div
   <p>${t.contact.p}</p>
   <div class="links">
     <a class="btn primary" href="mailto:${LINKS.email}">${LINKS.email}</a>
+    ${HAS_CV ? `<a class="btn" href="/cv.pdf" download>${t.contact.cv}</a>` : ''}
     <a class="btn" href="${LINKS.telegram}">Telegram</a>
     <a class="btn" href="${LINKS.linkedin}">LinkedIn</a>
     <a class="btn" href="${LINKS.github}">GitHub</a>
+    <a class="btn" href="${LINKS.habr}">Habr</a>
   </div>
 </section>
 </main>
@@ -250,6 +280,7 @@ await writeFile('dist/index.html', page('en', data));
 await writeFile('dist/ru/index.html', page('ru', data));
 await cp('src/styles.css', 'dist/styles.css');
 await cp('src/favicon.svg', 'dist/favicon.svg');
+if (HAS_CV) await cp('src/cv.pdf', 'dist/cv.pdf');
 await cp('src/og.png', 'dist/og.png').catch(() => console.warn('no src/og.png, skipping'));
 await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
 const today = new Date().toISOString().slice(0, 10);
