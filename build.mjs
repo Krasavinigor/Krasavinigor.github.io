@@ -1,0 +1,258 @@
+// Static site generator: no dependencies. Usage: node build.mjs  ->  dist/
+import { readFile, writeFile, mkdir, cp, rm } from 'node:fs/promises';
+
+const SITE = 'https://krasavinigor.github.io'; // change if you use a custom domain
+const LINKS = {
+  github: 'https://github.com/Krasavinigor',
+  linkedin: 'https://www.linkedin.com/in/igor-krasavin-b0716020a',
+  telegram: 'https://t.me/igorkrasavin',
+  email: 'i.krasavin1206@gmail.com',
+};
+const BEAM_PR = 'https://github.com/apache/beam/pull/17104';
+const BEAM_BLOG = 'https://beam.apache.org/blog/beam-2.40.0/';
+
+const T = {
+  en: {
+    path: '/', htmlLang: 'en', other: { href: '/ru/', label: 'RU' },
+    title: 'Igor Krasavin — Senior Frontend Engineer (React, TypeScript, BI & Data Visualization)',
+    desc: 'Senior Frontend Engineer with 7+ years in React and TypeScript. Builds data-heavy products: BI platform at VK. Contributor to Apache Beam and Microsoft CodePush tooling.',
+    nav: { oss: 'Open source', work: 'Experience', writing: 'Writing', contact: 'Contact' },
+    eyebrow: 'Senior Frontend Engineer · Yaroslavl, Russia',
+    h1: 'I build front-ends for data-heavy products.',
+    lead: '7+ years of React and TypeScript. Today I evolve Horizon, an internal BI platform at VK that unifies Apache Superset, Redash and Yandex DataLens. I have also contributed to Apache Beam and Microsoft’s CodePush tooling.',
+    cta: { contact: 'Get in touch', gh: 'GitHub', li: 'LinkedIn' },
+    stats: [
+      ['+47%', 'monthly active users on Horizon (2,363 → 3,488)'],
+      ['52 → 26 ms', 'static asset delivery after CDN + caching rework'],
+      ['750+', 'BI elements created via the Superset editing flows I integrated'],
+      ['{{PRS}}', 'merged pull requests into projects by Microsoft and Apache'],
+    ],
+    oss: {
+      h: 'Open source',
+      intro: 'Merged pull requests into projects I do not own. The list below is generated from the GitHub API and refreshed daily.',
+      beamH: 'Apache Beam',
+      beamP1: 'Added the context classes for CDAP plugins in CdapIO (BEAM-14081): <code>BatchSourceContext</code>, <code>BatchSinkContext</code> and <code>StreamingSourceContext</code> wrappers with tests.',
+      beamP2: `<a href="${BEAM_PR}">Pull request #17104</a> · listed among contributors of <a href="${BEAM_BLOG}">Apache Beam 2.40.0</a>`,
+      msH: 'Microsoft CodePush ecosystem',
+      msP: 'While working as an SDE at Microsoft I contributed to React Native CodePush, the CodePush server client, the Cordova plugin and App Center CLI: an iOS navigation fix, CLI request limits and JSON output, concurrency setting fix, security hardening (zipperdown) and documentation.',
+      more: (n) => `Show ${n} more`,
+      updated: 'Updated',
+    },
+    work: {
+      h: 'Experience',
+      jobs: [
+        { org: 'VK', role: 'Frontend Developer', when: 'Mar 2023 — present · Moscow', items: [
+          'Own the evolution of Horizon, a BI platform combining Superset, Redash and Yandex DataLens into one product.',
+          'Frontend architecture: S3/CDN static delivery, caching, multi-version deployments across data centers, zero-downtime releases.',
+          'Built dashboards, global filters, dashboard metadata management and data-exploration flows used across VK.',
+          'Product analytics on top of BI: dashboards used by 498+ people across VK products.',
+          'Introduced AI-assisted engineering workflows to the team.'] },
+        { org: 'Bank Tochka', role: 'Frontend Developer', when: 'Apr 2022 — Feb 2023', items: [
+          'Fintech platform for selling banking services: WebSockets for real-time statuses, multi-step forms (React Hook Form + Yup), list virtualization with Intersection Observer.',
+          'Built an internal design system from scratch; improved the CI/CD pipeline.'] },
+        { org: 'Microsoft', role: 'Software Development Engineer', when: 'Jul 2020 — Nov 2021', items: [
+          'Cloud microservices and developer tooling in Node.js and TypeScript on Azure (Cosmos DB, Table and Blob Storage, Data Explorer, AKS).',
+          'Contributions to App Center CLI, CodePush and React Native CodePush.'] },
+        { org: 'Akvelon', role: 'SDE → Technical Lead', when: 'Aug 2019 — May 2022', items: [
+          'Tech lead of a recruiting assistant (React, TypeScript, GCP, serverless); earlier, a real-time room-monitoring app (React, Redux, Socket.IO).',
+          'Contributed CdapIO work to Apache Beam.'] },
+      ],
+      skillsH: 'Focus',
+      skills: ['React', 'TypeScript', 'Frontend architecture', 'Data visualization', 'BI platforms', 'Design systems', 'Performance', 'AI-assisted engineering'],
+    },
+    writing: {
+      h: 'Writing',
+      p: 'Publication: <em>“One UI to rule them all, one UI to find them: 1 entry point, different BI”</em> — how we unified several BI tools behind a single interface.',
+    },
+    contact: { h: 'Contact', p: 'Open to interesting frontend and data-visualization problems. The fastest way to reach me is Telegram or email.' },
+    footer: 'Built with a tiny static generator · deployed on GitHub Pages',
+  },
+  ru: {
+    path: '/ru/', htmlLang: 'ru', other: { href: '/', label: 'EN' },
+    title: 'Игорь Красавин — Senior Frontend Engineer (React, TypeScript, BI и визуализация данных)',
+    desc: 'Senior Frontend Engineer, 7+ лет с React и TypeScript. Делаю интерфейсы для data-heavy продуктов: BI-платформа в VK. Контрибьютор Apache Beam и Microsoft CodePush.',
+    nav: { oss: 'Open source', work: 'Опыт', writing: 'Статьи', contact: 'Контакты' },
+    eyebrow: 'Senior Frontend Engineer · Ярославль',
+    h1: 'Делаю фронтенд для продуктов с большим количеством данных.',
+    lead: '7+ лет с React и TypeScript. Сейчас развиваю Horizon — внутреннюю BI-платформу VK, объединяющую Apache Superset, Redash и Yandex DataLens. Также вносил вклад в Apache Beam и инструменты Microsoft CodePush.',
+    cta: { contact: 'Связаться', gh: 'GitHub', li: 'LinkedIn' },
+    stats: [
+      ['+47%', 'MAU в Horizon (2 363 → 3 488)'],
+      ['52 → 26 мс', 'скорость отдачи статики после переработки CDN и кэширования'],
+      ['750+', 'BI-элементов создано через интегрированные мной сценарии редактирования Superset'],
+      ['{{PRS}}', 'смерженных pull request в проекты Microsoft и Apache'],
+    ],
+    oss: {
+      h: 'Open source',
+      intro: 'Смерженные pull request в чужие проекты. Список ниже генерируется из GitHub API и обновляется ежедневно.',
+      beamH: 'Apache Beam',
+      beamP1: 'Добавил контекстные классы для CDAP-плагинов в CdapIO (BEAM-14081): обёртки <code>BatchSourceContext</code>, <code>BatchSinkContext</code> и <code>StreamingSourceContext</code> с тестами.',
+      beamP2: `<a href="${BEAM_PR}">Pull request #17104</a> · в списке контрибьюторов <a href="${BEAM_BLOG}">Apache Beam 2.40.0</a>`,
+      msH: 'Экосистема Microsoft CodePush',
+      msP: 'Работая SDE в Microsoft, вносил вклад в React Native CodePush, клиент CodePush-сервера, Cordova-плагин и App Center CLI: исправление навигации на iOS, лимиты запросов и JSON-вывод в CLI, настройка конкурентности, защита от zipperdown и документация.',
+      more: (n) => `Показать ещё ${n}`,
+      updated: 'Обновлено',
+    },
+    work: {
+      h: 'Опыт',
+      jobs: [
+        { org: 'VK', role: 'Frontend Developer', when: 'март 2023 — н. в. · Москва', items: [
+          'Развиваю Horizon — BI-платформу, объединяющую Superset, Redash и Yandex DataLens в один продукт.',
+          'Архитектура фронтенда: раздача статики через S3/CDN, кэширование, мультиверсионные деплои по дата-центрам, релизы без даунтайма.',
+          'Дашборды, глобальные фильтры, управление метаданными дашбордов и сценарии исследования данных, которыми пользуются в VK.',
+          'Продуктовая аналитика поверх BI: дашбордами пользуются 498+ человек из продуктов VK.',
+          'Внедрил в команде AI-ассистированную разработку.'] },
+        { org: 'Банк Точка', role: 'Frontend Developer', when: 'апр 2022 — фев 2023', items: [
+          'Финтех-платформа продаж банковских услуг: WebSocket для статусов в реальном времени, многошаговые формы (React Hook Form + Yup), виртуализация списков через Intersection Observer.',
+          'С нуля построил внутреннюю дизайн-систему, улучшил CI/CD.'] },
+        { org: 'Microsoft', role: 'Software Development Engineer', when: 'июль 2020 — нояб 2021', items: [
+          'Облачные микросервисы и developer tooling на Node.js и TypeScript в Azure (Cosmos DB, Table и Blob Storage, Data Explorer, AKS).',
+          'Вклад в App Center CLI, CodePush и React Native CodePush.'] },
+        { org: 'Akvelon', role: 'SDE → Technical Lead', when: 'авг 2019 — май 2022', items: [
+          'Техлид ассистента рекрутера (React, TypeScript, GCP, serverless); ранее — приложение мониторинга переговорных в реальном времени (React, Redux, Socket.IO).',
+          'Работа над CdapIO для Apache Beam.'] },
+      ],
+      skillsH: 'Фокус',
+      skills: ['React', 'TypeScript', 'Архитектура фронтенда', 'Визуализация данных', 'BI-платформы', 'Дизайн-системы', 'Производительность', 'AI-ассистированная разработка'],
+    },
+    writing: {
+      h: 'Статьи',
+      p: 'Публикация: <em>«One UI to rule them all, one UI to find them: 1 entry point, different BI»</em> — как мы объединили несколько BI-инструментов за одним интерфейсом.',
+    },
+    contact: { h: 'Контакты', p: 'Открыт к интересным задачам во фронтенде и визуализации данных. Быстрее всего — Telegram или почта.' },
+    footer: 'Собрано небольшим статическим генератором · GitHub Pages',
+  },
+};
+
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+function contributions(t, data) {
+  const byRepo = new Map();
+  for (const pr of data.prs) {
+    if (!byRepo.has(pr.repo)) byRepo.set(pr.repo, []);
+    byRepo.get(pr.repo).push(pr);
+  }
+  const li = (p) => `<li><time datetime="${p.mergedAt}">${p.mergedAt}</time><a href="${p.url}">${esc(p.title)}</a></li>`;
+  return [...byRepo.entries()]
+    .sort((a, b) => (a[0] === 'apache/beam' ? -1 : b[0] === 'apache/beam' ? 1 : b[1].length - a[1].length))
+    .map(([repo, prs]) => {
+      const head = prs.slice(0, 4).map(li).join('');
+      const rest = prs.slice(4);
+      const more = rest.length ? `<details><summary>${t.oss.more(rest.length)}</summary><ul>${rest.map(li).join('')}</ul></details>` : '';
+      return `<div class="repo"><h3><a href="https://github.com/${repo}">${repo}</a><small>${prs.length} PR</small></h3><ul>${head}</ul>${more}</div>`;
+    })
+    .join('\n');
+}
+
+function page(lang, data) {
+  const t = T[lang];
+  const url = SITE + t.path;
+  const ld = {
+    '@context': 'https://schema.org', '@type': 'Person',
+    name: 'Igor Krasavin', alternateName: 'Игорь Красавин', jobTitle: 'Senior Frontend Engineer', url: SITE + '/',
+    address: { '@type': 'PostalAddress', addressLocality: 'Yaroslavl', addressCountry: 'RU' },
+    sameAs: [LINKS.github, LINKS.linkedin, LINKS.telegram],
+    knowsAbout: ['React', 'TypeScript', 'Frontend architecture', 'Data visualization', 'Business intelligence', 'Apache Beam', 'Design systems'],
+    worksFor: { '@type': 'Organization', name: 'VK' },
+  };
+  return `<!doctype html>
+<html lang="${t.htmlLang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(t.title)}</title>
+<meta name="description" content="${esc(t.desc)}">
+<link rel="canonical" href="${url}">
+<link rel="alternate" hreflang="en" href="${SITE}/">
+<link rel="alternate" hreflang="ru" href="${SITE}/ru/">
+<link rel="alternate" hreflang="x-default" href="${SITE}/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(t.title)}">
+<meta property="og:description" content="${esc(t.desc)}">
+<meta property="og:url" content="${url}">
+<meta property="og:image" content="${SITE}/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">${JSON.stringify(ld)}</script>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <strong>Igor Krasavin</strong>
+  <nav aria-label="Main">
+    <a href="#oss">${t.nav.oss}</a><a href="#work">${t.nav.work}</a><a href="#writing">${t.nav.writing}</a><a href="#contact">${t.nav.contact}</a>
+    <a class="lang" href="${t.other.href}" hreflang="${t.other.label.toLowerCase()}">${t.other.label}</a>
+  </nav>
+</header>
+<main>
+<div class="hero">
+  <p class="eyebrow">${t.eyebrow}</p>
+  <h1>${t.h1}</h1>
+  <p class="lead">${t.lead}</p>
+  <div class="links">
+    <a class="btn primary" href="#contact">${t.cta.contact}</a>
+    <a class="btn" href="${LINKS.github}">${t.cta.gh}</a>
+    <a class="btn" href="${LINKS.linkedin}">${t.cta.li}</a>
+  </div>
+</div>
+<div class="stats">
+${t.stats.map(([b, s]) => `  <div class="stat"><b>${b.replace('{{PRS}}', data.prs.length)}</b><span>${s}</span></div>`).join('\n')}
+</div>
+
+<section id="oss">
+  <h2>${t.oss.h}</h2>
+  <p class="note">${t.oss.intro}</p>
+  <div class="feature">
+    <h3>${t.oss.beamH}</h3>
+    <p>${t.oss.beamP1}</p>
+    <p>${t.oss.beamP2}</p>
+  </div>
+  <p>${t.oss.msP}</p>
+${contributions(t, data)}
+  <p class="note">${t.oss.updated}: ${data.generatedAt}</p>
+</section>
+
+<section id="work">
+  <h2>${t.work.h}</h2>
+${t.work.jobs.map((j) => `  <div class="job"><h3>${j.org} — ${j.role}</h3><div class="meta">${j.when}</div><ul>${j.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('\n')}
+  <h2 style="margin-top:8px">${t.work.skillsH}</h2>
+  <div class="tags">${t.work.skills.map((s) => `<span>${s}</span>`).join('')}</div>
+</section>
+
+<section id="writing">
+  <h2>${t.writing.h}</h2>
+  <p>${t.writing.p}</p>
+</section>
+
+<section id="contact">
+  <h2>${t.contact.h}</h2>
+  <p>${t.contact.p}</p>
+  <div class="links">
+    <a class="btn primary" href="mailto:${LINKS.email}">${LINKS.email}</a>
+    <a class="btn" href="${LINKS.telegram}">Telegram</a>
+    <a class="btn" href="${LINKS.linkedin}">LinkedIn</a>
+    <a class="btn" href="${LINKS.github}">GitHub</a>
+  </div>
+</section>
+</main>
+<footer>${t.footer}</footer>
+</div>
+</body>
+</html>
+`;
+}
+
+const data = JSON.parse(await readFile(new URL('./data/contributions.json', import.meta.url), 'utf8'));
+await rm('dist', { recursive: true, force: true });
+await mkdir('dist/ru', { recursive: true });
+await writeFile('dist/index.html', page('en', data));
+await writeFile('dist/ru/index.html', page('ru', data));
+await cp('src/styles.css', 'dist/styles.css');
+await cp('src/favicon.svg', 'dist/favicon.svg');
+await cp('src/og.png', 'dist/og.png').catch(() => console.warn('no src/og.png, skipping'));
+await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
+const today = new Date().toISOString().slice(0, 10);
+await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${['/', '/ru/'].map((p) => `<url><loc>${SITE}${p}</loc><lastmod>${today}</lastmod><xhtml:link rel="alternate" hreflang="en" href="${SITE}/"/><xhtml:link rel="alternate" hreflang="ru" href="${SITE}/ru/"/></url>`).join('\n')}\n</urlset>\n`);
+await writeFile('dist/.nojekyll', '');
+console.log('Built dist/');

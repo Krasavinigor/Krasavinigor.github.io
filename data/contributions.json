@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-09-29",
+  "prs": [
+    { "repo": "apache/beam", "title": "[BEAM-14081] [CdapIO] Add context classes for CDAP plugins", "url": "https://github.com/apache/beam/pull/17104", "mergedAt": "2022-05-11" },
+    { "repo": "microsoft/appcenter-cli", "title": "Return previous value for PROMISE_CONCURRENCY", "url": "https://github.com/microsoft/appcenter-cli/pull/1398", "mergedAt": "2021-04-28" },
+    { "repo": "microsoft/appcenter-cli", "title": "Modify condition", "url": "https://github.com/microsoft/appcenter-cli/pull/1388", "mergedAt": "2021-04-19" },
+    { "repo": "microsoft/appcenter-cli", "title": "[CodePush] Fix json output", "url": "https://github.com/microsoft/appcenter-cli/pull/1244", "mergedAt": "2021-01-25" },
+    { "repo": "microsoft/appcenter-cli", "title": "[CodePush] Add limit for request", "url": "https://github.com/microsoft/appcenter-cli/pull/1215", "mergedAt": "2021-01-20" },
+    { "repo": "microsoft/cordova-plugin-code-push", "title": "Fix typo and change links", "url": "https://github.com/microsoft/cordova-plugin-code-push/pull/645", "mergedAt": "2020-08-28" },
+    { "repo": "microsoft/cordova-plugin-code-push", "title": "Update didFailNavigation method", "url": "https://github.com/microsoft/cordova-plugin-code-push/pull/642", "mergedAt": "2020-08-28" },
+    { "repo": "microsoft/code-push", "title": "Update information about error handling", "url": "https://github.com/microsoft/code-push/pull/741", "mergedAt": "2020-08-19" },
+    { "repo": "microsoft/code-push", "title": "Add migration notice for new release", "url": "https://github.com/microsoft/code-push/pull/740", "mergedAt": "2020-08-19" },
+    { "repo": "microsoft/react-native-code-push", "title": "Fix typo", "url": "https://github.com/microsoft/react-native-code-push/pull/1927", "mergedAt": "2020-08-14" },
+    { "repo": "microsoft/cordova-plugin-code-push", "title": "Replace code-push CLI commands", "url": "https://github.com/microsoft/cordova-plugin-code-push/pull/639", "mergedAt": "2020-08-14" },
+    { "repo": "microsoft/react-native-code-push", "title": "Replace code-push CLI commands", "url": "https://github.com/microsoft/react-native-code-push/pull/1926", "mergedAt": "2020-08-14" },
+    { "repo": "microsoft/code-push", "title": "Change SERVER_URL", "url": "https://github.com/microsoft/code-push/pull/730", "mergedAt": "2020-07-29" },
+    { "repo": "microsoft/react-native-code-push", "title": "Update documents for using Multi-Deployment Testing with Xcode 11", "url": "https://github.com/microsoft/react-native-code-push/pull/1901", "mergedAt": "2020-07-15" },
+    { "repo": "microsoft/react-native-code-push", "title": "Update docs for using video component", "url": "https://github.com/microsoft/react-native-code-push/pull/1900", "mergedAt": "2020-07-10" },
+    { "repo": "microsoft/react-native-code-push", "title": "Mitigate zipperdown", "url": "https://github.com/microsoft/react-native-code-push/pull/1881", "mergedAt": "2020-06-19" }
+  ]
+}
