@@ -1,3 +1,6 @@
 dist/
 node_modules/
 .DS_Store
+
+# Local resume (contains phone number), not for the public repo
+Igor_Krasavin_Senior_Frontend_Engineer.pdf
