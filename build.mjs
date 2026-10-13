@@ -63,8 +63,14 @@ const T = {
           'SDE (mid-level), contractor at Microsoft via Akvelon (Mar 2020 — Mar 2021): App Center CodePush and Crashes. Cloud microservices and developer tooling in Node.js and TypeScript on Azure (Cosmos DB, Table and Blob Storage, Data Explorer, AKS); commits to Microsoft’s public repositories.',
           'Intern, GeekRoom (Sep — Dec 2019): real-time meeting-room monitoring app (React, Redux, Socket.IO).'] },
       ],
-      skillsH: 'Focus',
-      skills: ['React', 'TypeScript', 'Frontend architecture', 'Data visualization', 'BI platforms', 'Design systems', 'Performance', 'AI-assisted engineering'],
+      skillsH: 'Skills',
+      skills: [
+        ['Frontend', ['React', 'TypeScript', 'JavaScript', 'Redux', 'TanStack Query', 'TanStack Router', 'Zustand', 'Zod', 'React Hook Form', 'Remix', 'SSR']],
+        ['UI & data visualization', ['Design systems', 'Storybook', 'Figma', 'Gravity UI', 'VKUI', 'CSS Modules', 'SCSS', 'MapLibre GL JS', 'Highcharts', 'ECharts', 'Monaco Editor']],
+        ['Architecture & performance', ['Frontend architecture', 'Feature-Sliced Design', 'Domain-driven design', 'postMessage', 'iframe integration', 'History API', 'Web Vitals', 'Code splitting', 'Lazy loading', 'Accessibility', 'i18n']],
+        ['Data & networking', ['Apache Superset', 'Redash', 'Yandex DataLens', 'GraphQL', 'REST', 'WebSockets', 'Socket.IO']],
+        ['Backend, delivery & quality', ['Node.js', 'Python', 'PostgreSQL', 'Knex', 'Docker', 'GitLab CI/CD', 'Rspack', 'Vite', 'pnpm workspaces', 'Jest', 'Testing Library', 'Playwright', 'Azure', 'GCP', 'AI coding agents', 'OpenSpec']],
+      ],
     },
     writing: {
       h: 'Writing',
@@ -129,8 +135,14 @@ const T = {
           'SDE (middle), подрядчик в Microsoft через Akvelon (март 2020 — март 2021): App Center CodePush и Crashes. Облачные микросервисы и developer tooling на Node.js и TypeScript в Azure (Cosmos DB, Table и Blob Storage, Data Explorer, AKS); коммиты в публичные репозитории Microsoft.',
           'Стажёр, GeekRoom (сен — дек 2019): приложение мониторинга переговорных в реальном времени (React, Redux, Socket.IO).'] },
       ],
-      skillsH: 'Фокус',
-      skills: ['React', 'TypeScript', 'Архитектура фронтенда', 'Визуализация данных', 'BI-платформы', 'Дизайн-системы', 'Производительность', 'AI-ассистированная разработка'],
+      skillsH: 'Навыки',
+      skills: [
+        ['Фронтенд', ['React', 'TypeScript', 'JavaScript', 'Redux', 'TanStack Query', 'TanStack Router', 'Zustand', 'Zod', 'React Hook Form', 'Remix', 'SSR']],
+        ['Интерфейсы и визуализация данных', ['Дизайн-системы', 'Storybook', 'Figma', 'Gravity UI', 'VKUI', 'CSS Modules', 'SCSS', 'MapLibre GL JS', 'Highcharts', 'ECharts', 'Monaco Editor']],
+        ['Архитектура и производительность', ['Архитектура фронтенда', 'Feature-Sliced Design', 'Domain-driven design', 'postMessage', 'Встраивание через iframe', 'History API', 'Web Vitals', 'Разделение кода', 'Ленивая загрузка', 'Доступность', 'i18n']],
+        ['Данные и сетевое взаимодействие', ['Apache Superset', 'Redash', 'Yandex DataLens', 'GraphQL', 'REST', 'WebSockets', 'Socket.IO']],
+        ['Бэкенд, доставка и качество', ['Node.js', 'Python', 'PostgreSQL', 'Knex', 'Docker', 'GitLab CI/CD', 'Rspack', 'Vite', 'pnpm workspaces', 'Jest', 'Testing Library', 'Playwright', 'Azure', 'GCP', 'AI coding agents', 'OpenSpec']],
+      ],
     },
     writing: {
       h: 'Статьи',
@@ -246,7 +258,7 @@ ${contributions(t, data)}
   <h2>${t.work.h}</h2>
 ${t.work.jobs.map((j) => `  <div class="job"><h3>${j.org} — ${j.role}</h3><div class="meta">${j.when}</div><ul>${j.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('\n')}
   <h2 style="margin-top:8px">${t.work.skillsH}</h2>
-  <div class="tags">${t.work.skills.map((s) => `<span>${s}</span>`).join('')}</div>
+  <div class="skill-groups">${t.work.skills.map(([category, items]) => `<div class="skill-group"><h3>${category}</h3><div class="tags">${items.map((s) => `<span>${s}</span>`).join('')}</div></div>`).join('')}</div>
 </section>
 
 <section id="writing">
