@@ -11,6 +11,7 @@ const LINKS = {
   habr: 'https://habr.com/ru/users/IgorKrasavin/',
 };
 const ARTICLE = 'https://habr.com/ru/companies/vk/articles/1039482/';
+const RAINCOAT = 'https://github.com/Krasavinigor/Raincoat';
 const HAS_CV = existsSync(new URL('./src/cv.pdf', import.meta.url)); // drop the PDF into src/cv.pdf to show the button
 const BEAM_PR = 'https://github.com/apache/beam/pull/17104';
 const BEAM_BLOG = 'https://beam.apache.org/blog/beam-2.40.0/';
@@ -19,18 +20,29 @@ const T = {
   en: {
     path: '/', htmlLang: 'en', other: { href: '/ru/', label: 'RU' },
     title: 'Igor Krasavin — Senior Frontend Engineer (React, TypeScript, BI & Data Visualization)',
-    desc: 'Senior Frontend Engineer with 7+ years in React and TypeScript. Builds data-heavy products: BI platform at VK. Contributor to Apache Beam and Microsoft CodePush tooling.',
-    nav: { oss: 'Open source', work: 'Experience', writing: 'Writing', contact: 'Contact' },
+    desc: 'Igor Krasavin builds data-heavy frontend products at VK. Explore Raincoat, his personal Next.js and AI wardrobe project, plus open-source work.',
+    nav: { project: 'Personal project', oss: 'Open source', work: 'Experience', writing: 'Writing', contact: 'Contact' },
     eyebrow: 'Senior Frontend Engineer · Yaroslavl, Russia (UTC+3) · Open to remote &amp; relocation',
     h1: 'I build front-ends for data-heavy products.',
-    lead: '7+ years of React and TypeScript. Today I evolve Horizon, an internal BI platform at VK that unifies Apache Superset, Redash and Yandex DataLens. I have also contributed to Apache Beam and Microsoft’s CodePush tooling.',
+    lead: '7+ years building with React and TypeScript. At VK, I develop Horizon, a BI platform bringing Apache Superset, Redash and Yandex DataLens into one interface. I also build Raincoat, a personal weather-aware wardrobe app.',
     cta: { contact: 'Get in touch', gh: 'GitHub', li: 'LinkedIn' },
     stats: [
-      ['+47%', 'monthly active users on Horizon (2,363 → 3,488)'],
+      ['5K', 'users of Horizon, VK’s internal BI platform'],
       ['52 → 26 ms', 'static asset delivery after CDN + caching rework'],
-      ['750+', 'BI elements created via the Superset editing flows I integrated'],
-      ['{{PRS}}', 'merged pull requests into projects by Microsoft and Apache'],
+      ['20 → 5 min', 'from release tag to production after CI/CD automation'],
+      ['4×', 'faster cold builds after migrating to Rspack'],
     ],
+    project: {
+      h: 'Featured personal project',
+      title: 'Raincoat — a weather-aware wardrobe app',
+      intro: 'Upload a clothing photo, review the AI-suggested details, then generate outfits from your own wardrobe for the next three hours of weather.',
+      rows: [
+        ['Frontend', 'Next.js, React and TypeScript with server rendering, client caching and English/Russian localization.'],
+        ['AI', 'OpenAI vision and Structured Outputs, followed by validation against real wardrobe items and weather rules.'],
+        ['Reliability', 'A PostgreSQL-backed worker handles AI jobs; SSE delivers status updates, and idempotency guards against duplicate requests.'],
+      ],
+      link: 'Explore the code and local demo',
+    },
     oss: {
       h: 'Open source',
       intro: 'Merged pull requests into projects I do not own. The list below is generated from the GitHub API and refreshed daily.',
@@ -46,12 +58,11 @@ const T = {
       h: 'Experience',
       jobs: [
         { org: 'VK', role: 'Senior Frontend Developer', when: 'Mar 2023 — present · Moscow', items: [
-          'Own the evolution of Horizon, a BI platform combining Superset, Redash and Yandex DataLens into one product; monthly active users grew from 2,363 to 3,488 (+47%).',
+          'Own the frontend architecture and development of Horizon, a BI platform combining Superset, Redash and Yandex DataLens.',
           'Designed the layer that embeds Superset and Redash into one shell: a postMessage protocol between apps, browser-history sync for back/forward and shareable deep links, theme and language sync, and a reusable embedding library that sped up the Redash integration.',
-          'Frontend architecture: S3/CDN static delivery, caching, multi-version deployments across data centers, zero-downtime releases.',
+          'Redesigned S3/CDN static delivery and caching; built tag-triggered CI/CD pipelines and migrated cold builds to Rspack.',
           'Built dashboards, global filters, dashboard metadata management and data-exploration flows used across VK.',
           'Product analytics on top of BI: dashboards used by 498+ people across VK products.',
-          'Introduced AI-assisted engineering workflows to the team.',
           'Advertising cabinet analytics (Aug 2024 — Jan 2025): frontend of the analytics section in VK’s advertising cabinet — React, TypeScript, Remix, GraphQL, Vite, VKUI, CSS Modules.',
           'Internal product (Apr — Jul 2026, in parallel with Horizon): frontend built from scratch — TanStack Query and Router, Zustand, Zod, Storybook, Web Vitals.'] },
         { org: 'Bank Tochka', role: 'Frontend Developer', when: 'Apr 2022 — Feb 2023', items: [
@@ -91,18 +102,29 @@ const T = {
   ru: {
     path: '/ru/', htmlLang: 'ru', other: { href: '/', label: 'EN' },
     title: 'Игорь Красавин — Senior Frontend Engineer (React, TypeScript, BI и визуализация данных)',
-    desc: 'Senior Frontend Engineer, 7+ лет с React и TypeScript. Делаю интерфейсы для data-heavy продуктов: BI-платформа в VK. Контрибьютор Apache Beam и Microsoft CodePush.',
-    nav: { oss: 'Open source', work: 'Опыт', writing: 'Статьи', contact: 'Контакты' },
+    desc: 'Игорь Красавин разрабатывает интерфейсы для BI-платформы VK. Raincoat — его личный проект на Next.js с ИИ для подбора одежды по погоде.',
+    nav: { project: 'Личный проект', oss: 'Open source', work: 'Опыт', writing: 'Статьи', contact: 'Контакты' },
     eyebrow: 'Senior Frontend Engineer · Ярославль (UTC+3) · Открыт к удалёнке и релокации',
     h1: 'Делаю фронтенд для продуктов с большим количеством данных.',
-    lead: '7+ лет с React и TypeScript. Сейчас развиваю Horizon — внутреннюю BI-платформу VK, объединяющую Apache Superset, Redash и Yandex DataLens. Также вносил вклад в Apache Beam и инструменты Microsoft CodePush.',
+    lead: 'Более 7 лет разрабатываю на React и TypeScript. В VK развиваю Horizon — BI-платформу, объединяющую Apache Superset, Redash и Yandex DataLens. Также делаю Raincoat — личный проект для подбора одежды по погоде.',
     cta: { contact: 'Связаться', gh: 'GitHub', li: 'LinkedIn' },
     stats: [
-      ['+47%', 'MAU в Horizon (2 363 → 3 488)'],
+      ['5 тыс.', 'пользователей внутренней BI-платформы Horizon'],
       ['52 → 26 мс', 'скорость отдачи статики после переработки CDN и кэширования'],
-      ['750+', 'BI-элементов создано через интегрированные мной сценарии редактирования Superset'],
-      ['{{PRS}}', 'смерженных pull request в проекты Microsoft и Apache'],
+      ['20 → 5 мин', 'от тега релиза до продакшена после автоматизации CI/CD'],
+      ['в 4 раза', 'быстрее холодная сборка после перехода на Rspack'],
     ],
+    project: {
+      h: 'Личный проект',
+      title: 'Raincoat — гардероб с учётом погоды',
+      intro: 'Загрузите фото вещи, проверьте предложенное ИИ описание и подберите образы из своего гардероба под погоду на ближайшие три часа.',
+      rows: [
+        ['Фронтенд', 'Next.js, React и TypeScript: серверный рендеринг, клиентское кэширование и переключение между русским и английским языками.'],
+        ['ИИ', 'OpenAI vision и Structured Outputs с последующей проверкой реальных вещей гардероба и погодных условий.'],
+        ['Надёжность', 'Воркер с PostgreSQL выполняет ИИ-задачи, SSE передаёт статусы, а идемпотентность защищает от повторных запросов.'],
+      ],
+      link: 'Код и локальное демо',
+    },
     oss: {
       h: 'Open source',
       intro: 'Смерженные pull request в чужие проекты. Список ниже генерируется из GitHub API и обновляется ежедневно.',
@@ -118,12 +140,11 @@ const T = {
       h: 'Опыт',
       jobs: [
         { org: 'VK', role: 'Senior Frontend Developer', when: 'март 2023 — н. в. · Москва', items: [
-          'Развиваю Horizon — BI-платформу, объединяющую Superset, Redash и Yandex DataLens в один продукт; MAU вырос с 2 363 до 3 488 (+47%).',
+          'Отвечаю за архитектуру и разработку фронтенда Horizon — BI-платформы, объединяющей Superset, Redash и Yandex DataLens.',
           'Спроектировал слой встраивания Superset и Redash в единую оболочку: протокол postMessage между приложениями, синхронизация истории браузера (назад/вперёд и ссылки на конкретные дашборды), синхронизация темы и языка, переиспользуемая библиотека встраивания, ускорившая интеграцию Redash.',
-          'Архитектура фронтенда: раздача статики через S3/CDN, кэширование, мультиверсионные деплои по дата-центрам, релизы без даунтайма.',
+          'Переработал доставку статики через S3/CDN и кэширование, построил CI/CD для релизов по тегу и перевёл холодные сборки на Rspack.',
           'Дашборды, глобальные фильтры, управление метаданными дашбордов и сценарии исследования данных, которыми пользуются в VK.',
           'Продуктовая аналитика поверх BI: дашбордами пользуются 498+ человек из продуктов VK.',
-          'Внедрил в команде AI-ассистированную разработку.',
           'Аналитика рекламного кабинета (авг 2024 — янв 2025): фронтенд раздела аналитики в рекламном кабинете VK — React, TypeScript, Remix, GraphQL, Vite, VKUI, CSS Modules.',
           'Внутренний продукт (апр — июль 2026, параллельно с Horizon): фронтенд с нуля — TanStack Query и Router, Zustand, Zod, Storybook, Web Vitals.'] },
         { org: 'Банк Точка', role: 'Frontend Developer', when: 'апр 2022 — фев 2023', items: [
@@ -222,7 +243,7 @@ function page(lang, data) {
 <header class="top">
   <strong>Igor Krasavin</strong>
   <nav aria-label="Main">
-    <a href="#oss">${t.nav.oss}</a><a href="#work">${t.nav.work}</a><a href="#writing">${t.nav.writing}</a><a href="#contact">${t.nav.contact}</a>
+    <a href="#project">${t.nav.project}</a><a href="#oss">${t.nav.oss}</a><a href="#work">${t.nav.work}</a><a href="#writing">${t.nav.writing}</a><a href="#contact">${t.nav.contact}</a>
     <a class="lang" href="${t.other.href}" hreflang="${t.other.label.toLowerCase()}">${t.other.label}</a>
   </nav>
 </header>
@@ -240,6 +261,16 @@ function page(lang, data) {
 <div class="stats">
 ${t.stats.map(([b, s]) => `  <div class="stat"><b>${b.replace('{{PRS}}', data.prs.length)}</b><span>${s}</span></div>`).join('\n')}
 </div>
+
+<section id="project">
+  <h2>${t.project.h}</h2>
+  <article class="case project">
+    <h3><a href="${RAINCOAT}">${t.project.title}</a></h3>
+    <p>${t.project.intro}</p>
+    <dl>${t.project.rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+    <a class="btn primary" href="${RAINCOAT}">${t.project.link}</a>
+  </article>
+</section>
 
 <section id="oss">
   <h2>${t.oss.h}</h2>
